@@ -25,14 +25,99 @@ This module can work with any printer running Klipper but was designed and teste
 
 ## Installation
 
-Access your printer via SSH and run:
+Access your printer via SSH to execute the following parts
+
+### Backup your configuration and klipper objects
+
+On a command shell (`ssh`) to the printer, run the following
+
+> [!CAUTION]
+> Be sure to update the value for `reason`, or else you might be overwriting a previous backup.
+
+```bash
+date=$(date +'%Y%m%d')
+reason='beforegiosgantrytwist'
+mkdir -p /home/mks/qidi-klipper-backup-${date}-${reason}
+(cd /home/mks; tar cvf - klipper printer_data/config) | (cd /home/mks/qidi-klipper-backup-${date}-${reason}; tar xf -)
+```
+
+### Install Gantry Twist Utility
+
+ 1. Install the python modules needed
 
 ```bash
 cd /home/mks && wget -O - https://raw.githubusercontent.com/omgitsgio/gios_gantry_twist_utility/62a083f4c8356c34b2a8c6e02d26e93530addf10/install.sh | bash
 ```
 
-Add the configuration below to your `printer.cfg` **before** the `SAVE_CONFIG` section, then restart Klipper.
+> [!NOTE]
+> This procedure requires `sudo` access, you will need to have the password for user `mks` at your disposal (if you use certificate based SSH access for instance).
 
+#### Logging example
+
+A successful install looks like this:
+
+```log
+mks@mkspi:~/printer_data/config/CustomMacros$ cd /home/mks && wget -O - https://raw.githubusercontent.com/omgitsgio/gios_gantry_twist_utility/62a083f4c8356c34b2a8c6e02d26e93530addf10/install.sh | bash
+--2026-02-22 11:09:01--  https://raw.githubusercontent.com/omgitsgio/gios_gantry_twist_utility/62a083f4c8356c34b2a8c6e02d26e93530addf10/install.sh
+Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 185.199.109.133, 185.199.111.133, 185.199.108.133, ...
+Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|185.199.109.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 3772 (3.7K) [text/plain]
+Saving to: ‘STDOUT’
+
+-                                                    100%[======================================================================================================================>]   3.68K  --.-KB/s    in 0s
+
+2026-02-22 11:09:01 (15.5 MB/s) - written to stdout [3772/3772]
+
+
+=============================================
+- Gantry Twist Utility module install script -
+=============================================
+
+[sudo] password for mks:
+[PRE-CHECK] Klipper service found! Continuing...
+
+libopenblas-dev is already installed
+libatlas-base-dev is already installed
+[DOWNLOAD] Downloading Gio's Gantry Twist Utility module repository...
+Cloning into 'gantry_twist_utility'...
+remote: Enumerating objects: 55, done.
+remote: Counting objects: 100% (1/1), done.
+remote: Total 55 (delta 0), reused 0 (delta 0), pack-reused 54 (from 1)
+Unpacking objects: 100% (55/55), done.
+[DOWNLOAD] Download complete!
+
+[SETUP] Installing/Updating Gantry Twist Utility dependencies...
+Requirement already satisfied: pip in ./klippy-env/lib/python3.7/site-packages (24.0)
+Requirement already satisfied: matplotlib in ./klippy-env/lib/python3.7/site-packages (from -r /home/mks/gantry_twist_utility/requirements.txt (line 1)) (3.5.3)
+Requirement already satisfied: numpy in ./klippy-env/lib/python3.7/site-packages (from -r /home/mks/gantry_twist_utility/requirements.txt (line 2)) (1.21.6)
+Requirement already satisfied: scipy in ./klippy-env/lib/python3.7/site-packages (from -r /home/mks/gantry_twist_utility/requirements.txt (line 3)) (1.7.3)
+Requirement already satisfied: cycler>=0.10 in ./klippy-env/lib/python3.7/site-packages (from matplotlib->-r /home/mks/gantry_twist_utility/requirements.txt (line 1)) (0.11.0)
+Requirement already satisfied: fonttools>=4.22.0 in ./klippy-env/lib/python3.7/site-packages (from matplotlib->-r /home/mks/gantry_twist_utility/requirements.txt (line 1)) (4.38.0)
+Requirement already satisfied: kiwisolver>=1.0.1 in ./klippy-env/lib/python3.7/site-packages (from matplotlib->-r /home/mks/gantry_twist_utility/requirements.txt (line 1)) (1.4.5)
+Requirement already satisfied: packaging>=20.0 in ./klippy-env/lib/python3.7/site-packages (from matplotlib->-r /home/mks/gantry_twist_utility/requirements.txt (line 1)) (24.0)
+Requirement already satisfied: pillow>=6.2.0 in ./klippy-env/lib/python3.7/site-packages (from matplotlib->-r /home/mks/gantry_twist_utility/requirements.txt (line 1)) (9.5.0)
+Requirement already satisfied: pyparsing>=2.2.1 in ./klippy-env/lib/python3.7/site-packages (from matplotlib->-r /home/mks/gantry_twist_utility/requirements.txt (line 1)) (3.1.4)
+Requirement already satisfied: python-dateutil>=2.7 in ./klippy-env/lib/python3.7/site-packages (from matplotlib->-r /home/mks/gantry_twist_utility/requirements.txt (line 1)) (2.9.0.post0)
+Requirement already satisfied: typing-extensions in ./klippy-env/lib/python3.7/site-packages (from kiwisolver>=1.0.1->matplotlib->-r /home/mks/gantry_twist_utility/requirements.txt (line 1)) (4.7.1)
+Requirement already satisfied: six>=1.5 in ./klippy-env/lib/python3.7/site-packages (from python-dateutil>=2.7->matplotlib->-r /home/mks/gantry_twist_utility/requirements.txt (line 1)) (1.17.0)
+
+[INSTALL] Linking Gantry Twist Utility module to Klipper extras
+[POST-INSTALL] Restarting Klipper...
+[POST-INSTALL] Restarting Moonraker...
+mks@mkspi:~$
+```
+
+ 2. Create a new directory and/or a new configuration file
+
+**Directory**
+```bash
+cd /home/mks/printer_data/config
+mkdir -p CustomMacros
+```
+
+**File** 
+`GiosGantryTwist.cfg` for example:
 ```cfg
 [gantry_twist_utility]
 
@@ -56,7 +141,34 @@ Add the configuration below to your `printer.cfg` **before** the `SAVE_CONFIG` s
 # bed_temp: 0.0
 # hotend_temp: 0.0
 ```
-For more configuration options please refer to [sample_config_complete.cfg](sample_config_complete.cfg).
+
+> [!TIP]
+> For more configuration options please refer to [sample_config_complete.cfg](sample_config_complete.cfg).
+
+ 3. Include the custom configuration file into `printer.cfg` file with the rest, at the start of the file.
+ 
+```gcode
+[include CustomMacros/GiosGantryTwist.cfg] 
+```
+
+When you're done editing, be sure to commit the changes to the filesystem
+
+```bash
+sync
+```
+
+and then power-cycle your printer.
+
+> [!WARNING]
+> Power-cycle means to turn your printer off at the power switch, wait 10s, and then turn it back on. It does **NOT** mean just save and restart in the Fluidd webUI.  
+
+### Cleanup
+
+The install script is no longer needed, so you can remove it. Through SSH run:
+
+```
+rm -f /home/mks/install.sh
+```
 
 ## Usage
 
@@ -92,7 +204,6 @@ This will:
 This mode will probe the bed as per settings/arguments and run 3 dashboards to help visualize the offset data.
 
 Please note that this is all experimental and it's not an exact science, but it has helped me understand that in my case axis twist compensation would have been sufficient to obtain decent results.
-
 
 ### Output Interpretation
 
@@ -139,6 +250,14 @@ When gantry twist compensation is applied, the first layer becomes more consiste
 
 ![X-Axis with Gantry Twist Compensation](docs/x_beacon_offset_gTwist_first_layer.png)
 
+## Uninstall
+
+ 1. Remove the `include` line in `printer.cfg` file
+ 2. Remove the file `CustomMacros/GiosGantryTwist.cfg`
+ 3. Remove the directory `/home/mks/gantry_twist_utility`
+
+Power-cycle the printer as per step 3 in the installation guide.
+
 ## Current Status & Future Plans
 
 ### Stability
@@ -159,3 +278,5 @@ The install script was mostly a readaptation of <https://github.com/qidi-communi
 
 ## Support
 Please refer to the QIDI community on GitHub: <https://github.com/qidi-community> or join the Discord channel: <https://discord.gg/FtDkxKsX>. Feel free to also contact me on GitHub.
+
+
