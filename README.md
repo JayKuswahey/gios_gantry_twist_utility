@@ -141,7 +141,7 @@ grid_size: 10
 
 ## Test temps
 bed_temp: 0
-hotend_temp:0
+hotend_temp: 0
 
 #  Extra delay at each point to avoid out-of-range samples.
 point_delay: 2
