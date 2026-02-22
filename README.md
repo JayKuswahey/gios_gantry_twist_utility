@@ -29,10 +29,10 @@ Access your printer via SSH to execute the following parts
 
 ### Backup your configuration and klipper objects
 
-On a command shell (`ssh`) to the printer, run the following
-
 > [!CAUTION]
 > Be sure to update the value for `reason`, or else you might be overwriting a previous backup.
+
+On a command shell (`ssh`) to the printer, run the following
 
 ```bash
 date=$(date +'%Y%m%d')
@@ -40,6 +40,8 @@ reason='beforegiosgantrytwist'
 mkdir -p /home/mks/qidi-klipper-backup-${date}-${reason}
 (cd /home/mks; tar cvf - klipper printer_data/config) | (cd /home/mks/qidi-klipper-backup-${date}-${reason}; tar xf -)
 ```
+
+So you have something to fall back to if something fails.
 
 ### Install Gantry Twist Utility
 
