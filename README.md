@@ -234,6 +234,23 @@ This will:
 3. Update your `[axis_twist_compensation]` configuration
 4. Prompt you to run `SAVE_CONFIG` to persist the changes
 
+### Save and restart Klipper
+
+Run the `SAVE_CONFIG` command in the Klipper console. This will restart Klipper and add a section at the bottom of the `printer.cfg` with `#*#` prefixes on the lines.
+
+<details>
+
+<Summary>Example of a configuration</Summary>
+
+```
+#*# [axis_twist_compensation]
+#*# z_compensations = -0.032596, -0.039812, -0.032902, -0.037653, -0.043206, -0.041615, -0.053408, -0.060687, -0.055672, -0.063146
+#*# compensation_start_x = 22.0
+#*# compensation_end_x = 283.0
+```
+ 
+</details>
+
 ### Analysis Mode
 
 This mode will probe the bed as per settings/arguments and run 3 dashboards to help visualize the offset data.
@@ -284,6 +301,65 @@ More complex twist patterns can occur across both X and Y axes, creating diagona
 When gantry twist compensation is applied, the first layer becomes more consistent, but the underlying mechanical issue remains.
 
 ![X-Axis with Gantry Twist Compensation](docs/x_beacon_offset_gTwist_first_layer.png)
+
+## Compensation mode
+
+### Adjust PRINT_START macro
+
+Every print needs to apply the grantry twist compensation. This needs to be done after G29 (getting the Z=0 values), and after a plate heatsoak if you do that.
+
+an example:
+
+```
+M190 S{bedtemp}                                                # Wait for print bed to reach target temperature
+M104 S140                                                      # Set nozzle to 140 so any remaining filament stuck to nozzle is softened
+M109 S140                                                      # Wait untill nozzle reaches 140C
+M118 Performing gantry twist utility...                        # Put text in the Console
+GANTRY_TWIST_UTILITY MODE=1 BED_TEMP={bedtemp} GRID_SIZE=5     # Apply the Gantry twist module on the bed temperature and a low grid size.
+```
+
+Which does:
+
+ 1. Heat bed to bed temperature
+ 2. Set nozzle to cool down to 140
+ 3. Wait for the nozzle to cool down to 140.
+ 4. Echo into the console that you are performing the gantry twist
+ 5. Perform the gantry twist, with compensation active, at the bed temperature, and check 5 points
+
+<details>
+
+<Summary>A more detailed example</Summary>
+
+Please note that `M118` is replaced by `RESPOND MSG=` as that's Qidi's style.
+
+> [!CAUTION]
+> Do **NOT** use this verbatim, as you will not have the full macro and variables in place to leverage `soak_vars` pieces!!
+  
+```
+    G0 X5 Y5 F6000                      # Move print head to front-left in case of any oozing
+    M104 S140                           # Set nozzle to 140 so any remaining filament stuck to nozzle is softened
+    M190 S{bedtemp}                     # Wait for print bed to reach target temperature
+
+    {% if filament_type != "PLA" and filament_type != "PETG" and filament_type != "TPU" %}
+      {% if bedtemp > 75 %}
+        M104 S0                             # Ensure hotend is fully off to minimise any oozing before headsoaking the bed
+        RESPOND MSG="Bed Temp Target higher than 75C, soaking"
+        G4 P{soak_vars.soaktime_initial} ; Soak for 10 minutes (600000 miliseconds)
+        RESPOND MSG="Regular soaking ended"
+        {% if curr_bed_type == "Engineering Plate" %}
+           RESPOND MSG="Bed type is Engineering, soaking some more!"
+           G4 P{soak_vars.soaktime_extra} ; Extra soak 20 minutes for Darkmoon CFX Plate
+           RESPOND MSG="Soaking some more ended"
+        {% endif %}
+      {% endif %}
+    {% endif %}
+
+    M109 S140                           # Wait untill nozzle reaches 140C to do the tapping on the plate
+    G29                                 # Perform Z-offset, and bed meshing measurements
+    RESPOND MSG="Performing gantry twist utility"
+    GANTRY_TWIST_UTILITY MODE=1 BED_TEMP={bedtemp} GRID_SIZE=5 # Apply the Gantry twist module on the bed temperature and a low grid size.
+```
+</details>
 
 ## Uninstall
 
