@@ -261,12 +261,12 @@ Please note that this is all experimental and it's not an exact science, but it 
 
 The analysis generates three visualization images that help you understand your gantry's twist characteristics:
 
-### 1. `beacon_offset_analysis_3d_meshes_overlay`
+#### 1. beacon_offset_analysis_3d_meshes_overlay
 Shows overlaid contact and proximity meshes from four different angles, helping you visualize the difference between the nozzle and probe perspectives.
 
 ![3D Meshes Overlay](docs/beacon_offset_analysis_3D_meshes_overlay_20251031_234553.png)
 
-### 2. `beacon_offset_analysis_3d_meshes&offset`
+#### 2. beacon_offset_analysis_3d_meshes&offset
 Displays:
 - Two separate mesh graphs (contact and proximity)
 - An overlay view at 45° angle
@@ -274,7 +274,7 @@ Displays:
 
 ![3D Meshes & Offset](docs/beacon_offset_analysis_3D_meshes&offset_20251031_234553.png)
 
-### 3. `beacon_offset_analysis`
+#### 3. beacon_offset_analysis
 The top-left plot immediately reveals patterns in the extent of the delta values, making it easy to identify bias and twist characteristics.
 
 The X and Y Trend Analysis plots on the right display delta values along their respective axes. The script highlights statistically significant trends and ranges exceeding 50µm. In the example below, note the clear sloping trend on the X-axis and the wide ranges on the Y-axis. While this indicates aggressive gantry twist, the consistent, symmetrical X-axis pattern is ideal for Klipper's X-axis compensation.
@@ -283,26 +283,30 @@ The bottom graph in the middle groups the measurements by row or column (dependi
 
 ![Beacon Offset Analysis](docs/beacon_offset_analysis_20251031_234553.png)
 
-## Understanding Gantry Twist Impact on First Layer
+### Understanding Gantry Twist Impact on First Layer
 
 Gantry twist directly affects first-layer quality by creating inconsistent Z-offsets across the bed. The following are good examples of some patterns that may occur:
 
-### X-Axis Twist Pattern
+#### X-Axis Twist Pattern
 When your gantry exhibits twist along the X-axis, you'll see variation in the offset deltas as you move left-to-right across the bed. This is the most common twist pattern on CoreXY printers.
 
 ![X-Axis Beacon Offset First Layer](docs/x_beacon_offset_first_layer.png)
 
-### XY Combined Twist Pattern
+#### XY Combined Twist Pattern
 More complex twist patterns can occur across both X and Y axes, creating diagonal or corner-biased variations that are harder to compensate for mechanically. Generally speaking, you can reduce or remove the effect of one of the axis twists by choosing a beacon/probe mount with zero X or Y offset.
 
 ![XY Combined Beacon Offset First Layer](docs/xy_beacon_offset_first_layer.png)
 
-### X-Axis Twist with Compensation
+#### X-Axis Twist with Compensation
 When gantry twist compensation is applied, the first layer becomes more consistent, but the underlying mechanical issue remains.
 
 ![X-Axis with Gantry Twist Compensation](docs/x_beacon_offset_gTwist_first_layer.png)
 
 ## Compensation mode
+
+This mode actually alters the functioning of the printer. It takes the analysis and applies (exact opposite) counterbalance so to speak.
+
+The command stays the same, but a parameter `MODE=1` needs to be added (compensation mode), instead of no parameter (which defaults to `0`, or analysis mode). 
 
 ### Adjust PRINT_START macro
 
@@ -359,6 +363,59 @@ Please note that `M118` is replaced by `RESPOND MSG=` as that's Qidi's style.
     RESPOND MSG="Performing gantry twist utility"
     GANTRY_TWIST_UTILITY MODE=1 BED_TEMP={bedtemp} GRID_SIZE=5 # Apply the Gantry twist module on the bed temperature and a low grid size.
 ```
+</details>
+
+After this you can start a print like any time before, it will just take a little bit more time to commence.
+
+<details>
+
+<Summary>A snippet of logging</Summary>
+
+```
+14:33:47 echo: Nozzle cleared
+14:33:48 echo: Nozzle cooled
+14:46:47 echo: Bed Temp Target higher than 75C, soaking
+14:51:46 echo: Regular soaking ended
+14:52:00 // Run Current: 0.69A Hold Current: 0.69A
+14:52:01 // Run Current: 1.15A Hold Current: 1.15A
+......[[omitted]]......
+14:54:55 // Sampled 60420 total points over 2 runs
+14:54:55 // Samples binned in 196 clusters
+14:54:57 // Mesh calibration complete
+14:54:57 // Bed Mesh state has been saved to profile [kamp]
+// for the current session.  The SAVE_CONFIG command will
+// update the printer config file and restart the printer.
+14:54:57 echo: Performing gantry twist utility
+14:54:57 // ============================================================
+14:54:57 // GANTRY TWIST UTILITY
+14:54:58 // Mode: Compensation
+14:54:58 // ============================================================
+14:54:58 // Heating bed to 95.0°C and hotend to 0.0°C
+14:55:56 // Homing all axes...
+......[[omitted]]......
+14:58:19 // ============================================================
+14:58:19 // Axis compensation points collection complete: 5/5 points successful
+14:58:19 // ============================================================
+14:58:19 // Returning to center...
+14:58:23 // Turning off heaters...
+14:58:23 // Computing axis twist compensation values...
+14:58:23 // Applying axis twist compensation...
+14:58:23 // New compensation range: start_x=22.0, end_x=283.0
+14:58:23 // New Z compensations: [0.0007931287281038243, 0.0014428648435697903, -0.002179701558722112, -0.01839409542842847, -0.022579158086106672]
+14:58:23 // Axis twist compensation applied successfully. Please SAVE_CONFIG to apply changes.
+14:58:50 // Filament width sensor Turned On
+14:58:50 // Filament width measurements cleared!
+14:58:50 // Filament dia (measured mm): 1.8999999999999995
+14:58:50 echo: Last File: first_layer_test_ABS_22m12s.gcode
+14:58:54 // Moving filament tip 0.0mms
+14:58:54 // KAMP purge starting at -0.93201, 260.0 and purging 30.0mm of filament, requested flow rate is 4.0mm3/s.
+14:59:15 // pressure_advance: 0.032000
+// pressure_advance_smooth_time: 0.030000
+15:22:33 // Setting Filament Offset to -0.090mm
+15:22:33 // Filament width sensor Turned Off
+15:22:36 Done printing file
+```
+ 
 </details>
 
 ## Uninstall
