@@ -122,7 +122,7 @@ mkdir -p custom
 ```
 
 **File** 
-`GiosGantryTwist.cfg` for example, taken from [this discord message](https://discord.com/channels/1184400034641477722/1435048301597556796/1444830142235938816):
+`custom/GiosGantryTwist.cfg` for example, taken from [this discord message](https://discord.com/channels/1184400034641477722/1435048301597556796/1444830142235938816):
 ```cfg
 [gantry_twist_utility]
 ## Operation mode (0 = analysis, 1 = compensation):
@@ -185,7 +185,7 @@ calibrate_y: 152.5
  3. Include the custom configuration file into `printer.cfg` file with the rest, at the start of the file.
  
 ```gcode
-[include custom/GiosGantryTwist.cfg] 
+[include ./custom/GiosGantryTwist.cfg] 
 ```
 
 When you're done editing, be sure to commit the changes to the filesystem
