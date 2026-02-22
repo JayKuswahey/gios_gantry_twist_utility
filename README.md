@@ -52,7 +52,9 @@ cd /home/mks && wget -O - https://raw.githubusercontent.com/omgitsgio/gios_gantr
 > [!NOTE]
 > This procedure requires `sudo` access, you will need to have the password for user `mks` at your disposal (if you use certificate based SSH access for instance).
 
-#### Logging example
+<details>
+ 
+<Summary>Logging example</Summary>
 
 A successful install looks like this:
 
@@ -107,6 +109,7 @@ Requirement already satisfied: six>=1.5 in ./klippy-env/lib/python3.7/site-packa
 [POST-INSTALL] Restarting Moonraker...
 mks@mkspi:~$
 ```
+</details>
 
  2. Create a new directory and/or a new configuration file
 
