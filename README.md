@@ -122,7 +122,7 @@ mkdir -p custom
 ```
 
 **File** 
-`GiosGantryTwist.cfg` for example:
+`GiosGantryTwist.cfg` for example, taken from [this discord message](https://discord.com/channels/1184400034641477722/1435048301597556796/1444830142235938816):
 ```cfg
 [gantry_twist_utility]
 ## Operation mode (0 = analysis, 1 = compensation):
@@ -314,7 +314,7 @@ The command stays the same, but a parameter `MODE=1` needs to be added (compensa
 
 Every print needs to apply the grantry twist compensation. This needs to be done after G29 (getting the Z=0 values), and after a plate heatsoak if you do that.
 
-an example:
+an example [taken from this discord message](https://discord.com/channels/1184400034641477722/1435048301597556796/1444840906439262278):
 
 ```
 M190 S{bedtemp}                                                # Wait for print bed to reach target temperature
@@ -448,5 +448,3 @@ The install script was mostly a readaptation of <https://github.com/qidi-communi
 
 ## Support
 Please refer to the QIDI community on GitHub: <https://github.com/qidi-community> or join the Discord channel: <https://discord.gg/FtDkxKsX>. Feel free to also contact me on GitHub.
-
-
