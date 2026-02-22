@@ -116,33 +116,65 @@ mks@mkspi:~$
 **Directory**
 ```bash
 cd /home/mks/printer_data/config
-mkdir -p CustomMacros
+mkdir -p custom
 ```
 
 **File** 
 `GiosGantryTwist.cfg` for example:
 ```cfg
 [gantry_twist_utility]
-
-# Operation mode (0 = analysis, 1 = compensation):
+## Operation mode (0 = analysis, 1 = compensation):
 # mode: 0
 
 # graphs_folder: ~/printer_data/config/Gantry_twist_analysis
 
-# Mesh boundaries to probe. When in compensation mode, X values will be used for start_x and end_x.
+## Mesh boundaries to probe. When in compensation mode, X values will be used for start_x and end_x.
 # min_x: 22.0
 # max_x: 283.0
 # min_y: 22.0
 # max_y: 283.0
 # calibrate_y: 152.5
 
-# Points per axis (grid_size * grid_size).
-# When in compensation mode, this will be the sample size along X-axis.
-# grid_size: 10
+## Points per axis (grid_size * grid_size).
+## When in compensation mode, this will be the sample size along X-axis.
+grid_size: 10
 
-# Test temps
-# bed_temp: 0.0
-# hotend_temp: 0.0
+## Test temps
+bed_temp: 0
+hotend_temp:0
+
+#  Extra delay at each point to avoid out-of-range samples.
+point_delay: 2
+
+## Retries for a point when BEACON_OFFSET_COMPARE fails (out-of-range).
+## Edge points can be unstable; 5+ recommended.
+## Failed points are non-fatal; analysis continues.
+max_retries: 10
+
+[axis_twist_compensation]
+## The speed (in mm/s) of non-probing moves during the calibration.
+#X The default is 50.
+speed: 50
+
+## The height (in mm) that the head should be commanded to move to
+## just prior to starting a probe operation. The default is 5.
+horizontal_move_z: 5
+
+## Defines the minimum X coordinate of the calibration
+## This should be the X coordinate that positions the nozzle at the starting
+## calibration position.
+calibrate_start_x: 20
+
+## Defines the maximum X coordinate of the calibration
+## This should be the X coordinate that positions the nozzle at the ending
+## calibration position.
+calibrate_end_x: 280
+
+## Defines the Y coordinate of the calibration
+## This should be the Y coordinate that positions the nozzle during the
+## calibration process. This parameter is recommended to
+## be near the center of the bed
+calibrate_y: 152.5
 ```
 
 > [!TIP]
@@ -151,7 +183,7 @@ mkdir -p CustomMacros
  3. Include the custom configuration file into `printer.cfg` file with the rest, at the start of the file.
  
 ```gcode
-[include CustomMacros/GiosGantryTwist.cfg] 
+[include custom/GiosGantryTwist.cfg] 
 ```
 
 When you're done editing, be sure to commit the changes to the filesystem
@@ -256,7 +288,7 @@ When gantry twist compensation is applied, the first layer becomes more consiste
 ## Uninstall
 
  1. Remove the `include` line in `printer.cfg` file
- 2. Remove the file `CustomMacros/GiosGantryTwist.cfg`
+ 2. Remove the file `custom/GiosGantryTwist.cfg`
  3. Remove the directory `/home/mks/gantry_twist_utility`
 
 Power-cycle the printer as per step 3 in the installation guide.
