@@ -423,8 +423,9 @@ After this you can start a print like any time before, it will just take a littl
 ## Uninstall
 
  1. Remove the `include` line in `printer.cfg` file
- 2. Remove the file `custom/GiosGantryTwist.cfg`
- 3. Remove the directory `/home/mks/gantry_twist_utility`
+ 2. Remove then `[axis_twist_compensation]` section in the `SAVE_CONFIG` part in the `printer.cfg` file, lines that start with  `#*#`
+ 3. Remove the file `custom/GiosGantryTwist.cfg`
+ 4. Remove the directory `/home/mks/gantry_twist_utility`
 
 Power-cycle the printer as per step 3 in the installation guide.
 
