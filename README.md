@@ -339,8 +339,7 @@ Which does:
 
 Please note that `M118` is replaced by `RESPOND MSG=` as that's Qidi's style.
 
-> [!CAUTION]
-> Do **NOT** use this verbatim, as you will not have the full macro and variables in place to leverage `soak_vars` pieces!!
+Do **NOT** use this verbatim, as you will not have the full macro and variables in place to leverage `soak_vars` pieces!!
   
 ```
     G0 X5 Y5 F6000                      # Move print head to front-left in case of any oozing
