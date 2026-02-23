@@ -241,6 +241,9 @@ This will:
 
 Run the `SAVE_CONFIG` command in the Klipper console. This will restart Klipper and add a section at the bottom of the `printer.cfg` with `#*#` prefixes on the lines.
 
+> [!NOTE]
+> This written-to-file configuration is now applied to _every_ print in the future, until you either a) add the command to the `PRINT_START` macro (further below) or b) run it once manually again, including the `SAVE_CONFIG`.
+
 <details>
 
 <Summary>Example of a configuration</Summary>
@@ -311,9 +314,13 @@ This mode actually alters the functioning of the printer. It takes the analysis 
 
 The command stays the same, but a parameter `MODE=1` needs to be added (compensation mode), instead of no parameter (which defaults to `0`, or analysis mode). 
 
-### Adjust PRINT_START macro
+Every print will apply the grantry twist compensation. Becuse
 
-Every print needs to apply the grantry twist compensation. This needs to be done after G29 (getting the Z=0 values), and after a plate heatsoak if you do that.
+### Adjust PRINT_START macro if you want to
+
+Running the command with `MODE=1`, combined with `SAVE_CONFIG` will permanently store the configuration at that point, and will persist through reboots. However, if you swap plates a lot, or your print at different temperatures a lot, or if you use a new plate once, you _MAY_ want to decide that you want to create a one-off configuration for only just this print. Or just do it every print.
+
+You will have to execute the `MODE=1` command, and _NOT_ also do `SAVE_CONFIG`. This needs to be done after G29 (getting the Z=0 values), and after a plate heatsoak if you do that.
 
 an example [taken from this discord message](https://discord.com/channels/1184400034641477722/1435048301597556796/1444840906439262278):
 
