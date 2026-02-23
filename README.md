@@ -122,7 +122,8 @@ mkdir -p custom
 ```
 
 **File** 
-`custom/GiosGantryTwist.cfg` for example, taken from [this discord message](https://discord.com/channels/1184400034641477722/1435048301597556796/1444830142235938816):
+
+Create file `custom/GiosGantryTwist.cfg` for example, taken from [this discord message](https://discord.com/channels/1184400034641477722/1435048301597556796/1444830142235938816):
 ```cfg
 [gantry_twist_utility]
 ## Operation mode (0 = analysis, 1 = compensation):
