@@ -140,7 +140,7 @@ Create file `custom/GiosGantryTwist.cfg` for example, taken from [this discord m
 
 ## Points per axis (grid_size * grid_size).
 ## When in compensation mode, this will be the sample size along X-axis.
-grid_size: 10
+grid_size: 5
 
 ## Test temps
 bed_temp: 0
